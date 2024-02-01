@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Qafila Server</title>
+    <style>
+        body {
+            background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+            text-align: center;
+            font-size: 24px;
+            color: #fff;
+        }
+        h1, h2, h3 {
+            margin-top: 20px;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        h3 {
+            font-size: 28px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Machador server running</h1>
+    <h2>Version is: {{ version }}</h2>
+    <h3>Server started before: {{ time }}</h3>
+</body>
+</html>
