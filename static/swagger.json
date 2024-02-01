@@ -1,0 +1,268 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "title": "Machador - Web App Server",
+      "description": "Machador is a web app that allows users to create and manage their own online stores. This is the server for the web app.",
+      "version": "1.0"
+    },
+    "host": "https://qafia-be-server-xgm7t.ondigitalocean.app",
+    "basePath": "/",
+    "schemes": [
+      "http"
+    ],
+    "paths": {
+      "/api/auth/delete_user": {
+        "delete": {
+          "summary": "Delete a user",
+          "description": "This endpoint deletes a user based on the provided username.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "Username of the user to delete",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "User deleted successfully",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/api/auth/login": {
+        "post": {
+          "summary": "User Login",
+          "description": "This endpoint allows users to log in by providing their email and password.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "User's email and password",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "User login successfully",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "integer"
+                  },
+                  "access_token": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            },
+            "default": {
+              "description": "Incorrect email or password",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/auth/signup": {
+        "post": {
+          "summary": "User Signup",
+          "description": "This endpoint allows new users to sign up by providing their email and password.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "User's email and password for signup",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "User created successfully",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "integer"
+                  },
+                  "access_token": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            },
+            "default": {
+              "description": "User already exists",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/auth/get_users": {
+        "get": {
+          "summary": "Get All Users",
+          "description": "This endpoint retrieves all users from the database, excluding sensitive information like IDs and passwords.",
+          "responses": {
+            "200": {
+              "description": "List of users",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/api/auth/update_user": {
+        "put": {
+          "summary": "Update User",
+          "description": "This endpoint updates an existing user's details based on the provided information.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "description": "User information for updating",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "current_balance": {
+                    "type": "number"
+                  },
+                  "isBanned": {
+                    "type": "boolean"
+                  },
+                  "isCreator": {
+                    "type": "boolean"
+                  },
+                  "isVerified": {
+                    "type": "boolean"
+                  },
+                  "role": {
+                    "type": "string"
+                  },
+                  "transactionIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "username": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "User updated successfully",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      }
+    }
+  }
