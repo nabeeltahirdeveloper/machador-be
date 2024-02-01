@@ -5,7 +5,7 @@ import os
 load_dotenv()
 
 # DB_NAME = config.db_name
-DB_NAME = "qafila"
+DB_NAME = "machador"
 DB_HOST = os.getenv("DB_HOST_NAME")
 DB_PORT = config.db_port
 DB_USER = config.db_username
