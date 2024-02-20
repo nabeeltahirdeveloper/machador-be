@@ -34,6 +34,7 @@ qrcode==7.4.2
 referencing==0.30.2
 reportlab==4.0.8
 rpds-py==0.12.0
+sendgrid==6.10.0
 six==1.16.0
 typing_extensions==4.8.0
 Werkzeug==3.0.1
