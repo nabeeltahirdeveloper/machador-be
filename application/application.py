@@ -4,7 +4,12 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import os
 from flask_swagger_ui import get_swaggerui_blueprint
-
+import cloudinary
+cloudinary.config(
+  cloud_name = 'datptkvvx', 
+  api_key = '469231572116984', 
+  api_secret = 'TKdJwZiaa5pbCnIM001ePMoDzVU'
+)
 app = Flask(__name__)
 api = Api(app)
 CORS(app)
