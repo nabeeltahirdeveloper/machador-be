@@ -7,6 +7,8 @@ from datetime import datetime
 from application.utils.aes_encryption import encrypt_aes, decrypt_aes
 from Crypto.Random import get_random_bytes
 from cloudinary import uploader
+from PyPDF2 import PdfReader
+from langchain.text_splitter import CharacterTextSplitter
 
 Bot = db["bot"]
 
@@ -30,6 +32,13 @@ def generate_aes_key():
     return get_random_bytes(16)  # AES key size could be 16 (AES-128), 24 (AES-192), or 32 (AES-256) bytes long.
 
 
+text_splitter = CharacterTextSplitter(
+    separator="\n",
+    chunk_size=800,
+    chunk_overlap=200,
+    length_function=len,
+)
+
 
 aes_key = b'\xb3\xb8(\x8a\xbe0\xa8\x8d\xbe+[\xca{@\xb1\x1d'  # Generate a random AES key for encryption
 print(f"AES Key: {aes_key}")
@@ -37,13 +46,28 @@ class AddBot(Resource):
     def post(self):
         try:
             files = request.files.getlist("file")
-            encrypted_files = []
             for file in files:
                 if is_pdf(file):
-                    content = file.read()
-                    iv, encrypted_content = encrypt_aes(content, aes_key)  # No need to encode
-                    encrypted_files.append({"iv": iv, "content": encrypted_content})
+                    # content = file.read()
+                    # iv, encrypted_content = encrypt_aes(content, aes_key)  # No need to encode
+                    # encrypted_files.append({"iv": iv, "content": encrypted_content})
+                    continue
+                else:
+                    return jsonify({"message": "Invalid file format. Only PDF files are allowed", "status": 400})
 
+            pdf_files = [file for file in files if is_pdf(file)]
+            if not pdf_files:
+                return jsonify({"message": "At least one PDF file is required", "status": 400})
+            text_splits = []
+            for pdf_file in pdf_files:
+                pdfreader = PdfReader(pdf_file)
+                raw_text = ''
+                for page in pdfreader.pages:
+                    content = page.extract_text()
+                    if content:
+                        raw_text += content
+                texts = text_splitter.split_text(raw_text)
+                text_splits.extend(texts)  # Assuming embed_texts method exists
 
 
             bot_profile = request.files.get("bot_profile")
@@ -59,13 +83,18 @@ class AddBot(Resource):
             # Encrypt the bot_prompt using AES
             iv, encrypted_bot_prompt = encrypt_aes(bot_prompt, aes_key)
 
+            
+
+
             bot_details = {
                 "bot_name": bot_name,
                 "bot_profile": profile_url,
                 "encrypted_bot_prompt": encrypted_bot_prompt,
                 "iv": iv,  # Store IV alongside encrypted data
-                "encrypted_files": encrypted_files,
-                "creation_date": datetime.now()
+                "text_splits": text_splits,
+                "creation_date": datetime.now(),
+                "chat_history": [],
+
             }
             Bot.insert_one(bot_details)
 
@@ -78,17 +107,19 @@ class AddBot(Resource):
 class GetBot(Resource):
     def get(self):
         try:
-            bots = Bot.find({}, {"_id": 0, "bot_name": 1, 'creation_date': 1, 'bot_profile': 1})
+            bots = Bot.find({}, {"_id": 1, "bot_name": 1, 'creation_date': 1, 'bot_profile': 1, 'chat_history':1})
             decrypted_bots = []
 
             for bot in bots:
                 # decrypted_prompt = decrypt_aes(bot["encrypted_bot_prompt"], bot["iv"], aes_key)  # Decrypt prompt
-                
+                last_chat = bot.get("chat_history", [])[-1] if bot.get("chat_history", []) else "No chat history yet"
                 bot_data = {
+                    "bot_id": str(bot["_id"]),
                     "bot_name": bot["bot_name"],
                     # "decrypted_prompt": decrypted_prompt.decode('utf-8'),
                     "creation_date": bot["creation_date"],
                     "bot_profile": bot["bot_profile"],
+                    "last_chat": last_chat
                     # Include other necessary fields
                 }
                 decrypted_bots.append(bot_data)
