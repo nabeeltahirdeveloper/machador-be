@@ -9,6 +9,7 @@ from Crypto.Random import get_random_bytes
 from cloudinary import uploader
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 Bot = db["bot"]
 
@@ -43,8 +44,10 @@ text_splitter = CharacterTextSplitter(
 aes_key = b'\xb3\xb8(\x8a\xbe0\xa8\x8d\xbe+[\xca{@\xb1\x1d'  # Generate a random AES key for encryption
 print(f"AES Key: {aes_key}")
 class AddBot(Resource):
+    @jwt_required
     def post(self):
         try:
+            email = get_jwt_identity()
             files = request.files.getlist("file")
             for file in files:
                 if is_pdf(file):
@@ -94,6 +97,7 @@ class AddBot(Resource):
                 "text_splits": text_splits,
                 "creation_date": datetime.now(),
                 "chat_history": [],
+                "email": email
 
             }
             Bot.insert_one(bot_details)
@@ -105,9 +109,13 @@ class AddBot(Resource):
 
 
 class GetBot(Resource):
+    @jwt_required
     def get(self):
         try:
-            bots = Bot.find({}, {"_id": 1, "bot_name": 1, 'creation_date': 1, 'bot_profile': 1, 'chat_history':1})
+            email = get_jwt_identity()
+            bots = Bot.find({
+                "email": email
+            }, {"_id": 1, "bot_name": 1, 'creation_date': 1, 'bot_profile': 1, 'chat_history':1})
             decrypted_bots = []
 
             for bot in bots:
