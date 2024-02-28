@@ -12,11 +12,12 @@ Bot = db["bot"]
 
 
 class GetAllFavorite(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self):
         try:
 
             email = get_jwt_identity()
+            print(email)
 
             
             

@@ -16,7 +16,7 @@ Bot = db["bot"]
 aes_key = b'\xb3\xb8(\x8a\xbe0\xa8\x8d\xbe+[\xca{@\xb1\x1d'  # Generate a random AES key for encryption
 print(f"AES Key: {aes_key}")
 class RemoveFromFavorite(Resource):
-    @jwt_required
+    @jwt_required()
     def post(self):
         try:
 

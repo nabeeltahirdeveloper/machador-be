@@ -28,7 +28,7 @@ class Signup(Resource):
             
             existing_user = Users.find_one({"email": email})
             
-            if existing_user:
+            if existing_user and existing_user.get("isVerified", False):
                 return jsonify({"message": "User already exists"})
             
             hashed_password = encrypt_password(password)

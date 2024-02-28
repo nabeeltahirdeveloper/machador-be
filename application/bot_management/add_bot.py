@@ -44,10 +44,12 @@ text_splitter = CharacterTextSplitter(
 aes_key = b'\xb3\xb8(\x8a\xbe0\xa8\x8d\xbe+[\xca{@\xb1\x1d'  # Generate a random AES key for encryption
 print(f"AES Key: {aes_key}")
 class AddBot(Resource):
-    @jwt_required
+    @jwt_required()
     def post(self):
         try:
-            email = get_jwt_identity()
+            identity = get_jwt_identity()
+            email = identity.get("username")
+            print("email", email)
             files = request.files.getlist("file")
             for file in files:
                 if is_pdf(file):
@@ -109,14 +111,19 @@ class AddBot(Resource):
 
 
 class GetBot(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self):
         try:
-            email = get_jwt_identity()
+            identity = get_jwt_identity()
+            email = identity.get("username")
+            print("email", email)
             bots = Bot.find({
                 "email": email
             }, {"_id": 1, "bot_name": 1, 'creation_date': 1, 'bot_profile': 1, 'chat_history':1})
             decrypted_bots = []
+
+            if not bots:
+                return jsonify({"message": "No bot found", "status": 404})
 
             for bot in bots:
                 # decrypted_prompt = decrypt_aes(bot["encrypted_bot_prompt"], bot["iv"], aes_key)  # Decrypt prompt

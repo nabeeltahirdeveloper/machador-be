@@ -13,7 +13,7 @@ Bot = db["bot"]
 
 
 class AddToFavorite(Resource):
-    @jwt_required
+    @jwt_required()
     def post(self):
         try:
 
