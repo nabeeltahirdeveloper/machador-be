@@ -19,7 +19,7 @@ from bson import ObjectId
 Bot = db["bot"]
 ASTRA_DB_APPLICATION_TOKEN = "AstraCS:BWdZZGegWodWoyvbSsIoHzue:1c3b531d1d132b854decda435108c54401df965cb9da5dad53e79ff081d51829"
 ASTRA_DB_API_ENDPOINT = "https://8c4ee0b7-ea01-49c6-a080-bae06d75c587-us-east1.apps.astra.datastax.com"
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "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"
 ASTRA_DB_ID = "8c4ee0b7-ea01-49c6-a080-bae06d75c587"  # Enter your Database ID
 
 
