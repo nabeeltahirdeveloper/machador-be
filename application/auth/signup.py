@@ -17,10 +17,10 @@ if not sg_api_key:
     # Handle missing API key appropriately
     print("SendGrid API key not found. Please set the SENDGRID_API_KEY environment variable.")
     # Exit or throw an exception as appropriate for your application
-
 class Signup(Resource):
     def post(self):
         try:
+            print("Sendgrid key", sg_api_key)
             data = request.json
             email = data['email']
             password = data['password']
@@ -49,7 +49,7 @@ class Signup(Resource):
 
         
 
-            sg = SendGridAPIClient("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")
+            sg = SendGridAPIClient(sg_api_key)
             response = sg.send(message)
             user = {
                 "email": email,
