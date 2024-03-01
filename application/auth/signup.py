@@ -49,7 +49,7 @@ class Signup(Resource):
 
         
 
-            sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+            sg = SendGridAPIClient("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")
             response = sg.send(message)
             user = {
                 "email": email,
