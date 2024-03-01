@@ -1,6 +1,5 @@
 ASTRA_DB_APPLICATION_TOKEN = "AstraCS:BWdZZGegWodWoyvbSsIoHzue:1c3b531d1d132b854decda435108c54401df965cb9da5dad53e79ff081d51829"
 ASTRA_DB_API_ENDPOINT = "https://8c4ee0b7-ea01-49c6-a080-bae06d75c587-us-east1.apps.astra.datastax.com"
-OPENAI_API_KEY = "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"
 ASTRA_DB_ID = "8c4ee0b7-ea01-49c6-a080-bae06d75c587"  # Enter your Database ID
 
 from langchain.vectorstores.cassandra import Cassandra
@@ -10,6 +9,12 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 import cassio
 from PyPDF2 import PdfReader
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # This loads the environment variables from .env
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 
 cassio.init(token=ASTRA_DB_APPLICATION_TOKEN, database_id=ASTRA_DB_ID)
