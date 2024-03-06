@@ -64,7 +64,6 @@ class Signup(Resource):
                 "current_balance": 0,
                 "transactionIds": [],
                 "verification_code": random_code,
-                "isVerified": False,
 
                 
                 }

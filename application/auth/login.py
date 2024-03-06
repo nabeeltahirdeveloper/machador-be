@@ -29,6 +29,11 @@ class Login(Resource):
             if not check_password(password, hashed_password):
                 return jsonify({"message": "Incorrect email or password" , "status": 400})
             
+            if not user.get("isVerified", False):
+                return jsonify({"message": "User not verified yet", "status": 400})
+
+
+
             access_token = user_token(email)
 
             ret_json = {
