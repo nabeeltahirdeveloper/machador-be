@@ -119,7 +119,7 @@ class GetBot(Resource):
             print("email", email)
             bots = Bot.find({
                 "email": email
-            }, {"_id": 1, "bot_name": 1, 'creation_date': 1, 'bot_profile': 1, 'chat_history':1})
+            }, {"_id": 1, "bot_name": 1, 'creation_date': 1, 'bot_profile': 1, 'chat_history':1, "isFavorite":1})
             decrypted_bots = []
 
             if not bots:
@@ -134,7 +134,9 @@ class GetBot(Resource):
                     # "decrypted_prompt": decrypted_prompt.decode('utf-8'),
                     "creation_date": bot["creation_date"],
                     "bot_profile": bot["bot_profile"],
-                    "last_chat": last_chat
+                    "last_chat": last_chat,
+                    "isFavorite": bot.get("isFavorite", False),
+                    "number_of_chats": len(bot.get("chat_history", []))
                     # Include other necessary fields
                 }
                 decrypted_bots.append(bot_data)

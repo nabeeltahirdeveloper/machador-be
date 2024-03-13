@@ -20,8 +20,8 @@ import os
 
 Bot = db["bot"]
 ASTRA_DB_APPLICATION_TOKEN = "AstraCS:fBxFyjGBEzdqBDzbeGrbEvHZ:3823b92d5d7269df2266abc1a4f1c8cce3a5a80f097b2d92ff39ab94f90bbcc9"
-ASTRA_DB_API_ENDPOINT = "https://3965fa65-049d-4df8-be7c-60984be212e6-us-east-1.apps.astra.datastax.com"
-ASTRA_DB_ID = "3965fa65-049d-4df8-be7c-60984be212e6"  # Enter your Database ID
+ASTRA_DB_API_ENDPOINT = "https://ac760d91-e43b-4db5-b28c-3a7798c19ebc-us-east-1.apps.astra.datastax.com"
+ASTRA_DB_ID = "ac760d91-e43b-4db5-b28c-3a7798c19ebc"  # Enter your Database ID
 load_dotenv()  # This loads the environment variables from .env
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
