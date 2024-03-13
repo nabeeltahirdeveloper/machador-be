@@ -6,6 +6,7 @@ import traceback
 from datetime import datetime
 from application.utils.aes_encryption import encrypt_aes, decrypt_aes
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from bson import ObjectId
 
 Users = db["users"]
 Bot = db["bot"]
@@ -30,7 +31,7 @@ class RemoveFromFavorite(Resource):
             data = {
                 "isFavorite": False
             }            
-            Bot.update_one({"_id": bot_id}, {"$set": data})
+            Bot.update_one({"_id": ObjectId(bot_id)}, {"$set": data})
 
 
 

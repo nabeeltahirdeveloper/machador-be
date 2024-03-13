@@ -16,16 +16,22 @@ class GetAllFavorite(Resource):
     def get(self):
         try:
 
-            email = get_jwt_identity()
+            email = get_jwt_identity().get("username")
             print(email)
 
             
             
-            bots = Bot.find({"email": email, "isFavorite": True})
+            bots = Bot.find({"email": email, "isFavorite": True}, {
+                "_id": 1,
+                "bot_name": 1,
+                "bot_profile": 1,
+            })
+
 
             bot_list = []
 
             for bot in bots:
+                print(bots)
                 bot["_id"] = str(bot["_id"])
                 bot_list.append(bot)
 
