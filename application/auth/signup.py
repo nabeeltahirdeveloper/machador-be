@@ -12,7 +12,7 @@ import random
 
 
 Users = db["users"]
-sg_api_key = os.environ.get('SENDGRID_API_KEY')
+sg_api_key = os.getenv("SENDGRID_API_KEY")
 if not sg_api_key:
     # Handle missing API key appropriately
     print("SendGrid API key not found. Please set the SENDGRID_API_KEY environment variable.")
@@ -50,7 +50,14 @@ class Signup(Resource):
         
 
             sg = SendGridAPIClient(sg_api_key)
-            response = sg.send(message)
+            try:
+                response = sg.send(message)
+                print(response.status_code)
+                print(response.body)
+            except Exception as e:
+                print(e)
+                print(traceback.format_exc())
+                return jsonify({"message": "Something went wrong"}), 500
             user = {
                 "email": email,
                 "username": username,
