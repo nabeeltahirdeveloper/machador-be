@@ -102,9 +102,9 @@ class AddBot(Resource):
                 "email": email
 
             }
-            Bot.insert_one(bot_details)
+            newBot = Bot.insert_one(bot_details)
 
-            return jsonify({"message": "Bot Details added successfully", "status": 200})
+            return jsonify({"message": "Bot Details added successfully", "status": 200, "botId": str(newBot.inserted_id)})
         except Exception as e:
             print(traceback.format_exc())
             return jsonify({"message": "Something went wrong", "status": 500})
