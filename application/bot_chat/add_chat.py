@@ -10,8 +10,8 @@ from cloudinary import uploader
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
 import cassio
-from langchain.llms import OpenAI
-from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_openai import OpenAI
+from langchain_openai import OpenAIEmbeddings
 from langchain.vectorstores.cassandra import Cassandra
 from langchain.indexes.vectorstore import VectorStoreIndexWrapper
 from bson import ObjectId
@@ -19,6 +19,7 @@ from dotenv import load_dotenv
 import os
 
 Bot = db["bot"]
+load_dotenv()  # This loads the environment variables from .env
 ASTRA_DB_APPLICATION_TOKEN = os.getenv("ASTRA_DB_APPLICATION_TOKEN")
 ASTRA_DB_API_ENDPOINT = os.getenv("ASTRA_DB_API_ENDPOINT")
 ASTRA_DB_ID = os.getenv("ASTRA_DB_KEY")  # Enter your Database ID
@@ -33,7 +34,7 @@ cassio.init(token=ASTRA_DB_APPLICATION_TOKEN, database_id=ASTRA_DB_ID)
 
 
 llm = OpenAI(openai_api_key=OPENAI_API_KEY)
-embedding = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
+embedding = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY, model="text-embedding-3-small")
 astra_vector_store = Cassandra(
     embedding=embedding,
     table_name="qa_mini_demo",
