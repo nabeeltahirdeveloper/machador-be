@@ -4,60 +4,45 @@ from flask import jsonify
 import hashlib
 import traceback
 from datetime import datetime
-from application.utils.aes_encryption import encrypt_aes, decrypt_aes
+from application.utils.aes_encryption import encrypt_aes
 from Crypto.Random import get_random_bytes
 from cloudinary import uploader
-from PyPDF2 import PdfReader
+from PyPDF2 import PdfReader, PdfWriter
 from langchain.text_splitter import CharacterTextSplitter
 from flask_jwt_extended import get_jwt_identity, jwt_required
+import io
 
 Bot = db["bot"]
 
 def is_pdf(file):
-    """Check if the file is a PDF by reading the first 4 bytes for the PDF header '%PDF'."""
     try:
-        
         header = file.read(4)
-        file.seek(0)  # Reset file pointer to the beginning.
+        file.seek(0)
         return header == b'%PDF'
     except Exception as e:
         print(traceback.format_exc())
         return False
 
-
 def encrypt_string(input_string):
-    """Encrypt a string using SHA256."""
     return hashlib.sha256(input_string.encode()).hexdigest()
 
 def generate_aes_key():
-    return get_random_bytes(16)  # AES key size could be 16 (AES-128), 24 (AES-192), or 32 (AES-256) bytes long.
+    return get_random_bytes(16)
 
+text_splitter = CharacterTextSplitter(separator="\n", chunk_size=800, chunk_overlap=200, length_function=len)
 
-text_splitter = CharacterTextSplitter(
-    separator="\n",
-    chunk_size=800,
-    chunk_overlap=200,
-    length_function=len,
-)
-
-
-aes_key = b'\xb3\xb8(\x8a\xbe0\xa8\x8d\xbe+[\xca{@\xb1\x1d'  # Generate a random AES key for encryption
+aes_key = b'\xb3\xb8(\x8a\xbe0\xa8\x8d\xbe+[\xca{@\xb1\x1d'
 print(f"AES Key: {aes_key}")
+
 class AddBot(Resource):
     @jwt_required()
     def post(self):
         try:
             identity = get_jwt_identity()
             email = identity.get("username")
-            print("email", email)
             files = request.files.getlist("file")
             for file in files:
-                if is_pdf(file):
-                    # content = file.read()
-                    # iv, encrypted_content = encrypt_aes(content, aes_key)  # No need to encode
-                    # encrypted_files.append({"iv": iv, "content": encrypted_content})
-                    continue
-                else:
+                if not is_pdf(file):
                     return jsonify({"message": "Invalid file format. Only PDF files are allowed", "status": 400})
 
             pdf_files = [file for file in files if is_pdf(file)]
@@ -67,12 +52,19 @@ class AddBot(Resource):
             for pdf_file in pdf_files:
                 pdfreader = PdfReader(pdf_file)
                 raw_text = ''
+                page_number = 0
                 for page in pdfreader.pages:
                     content = page.extract_text()
                     if content:
                         raw_text += content
+                    page_writer = PdfWriter()
+                    page_writer.add_page(page)
+                    output_stream = io.BytesIO()
+                    page_writer.write(output_stream)
+                    # Save or upload output_stream.getvalue() as a separate PDF file
+                    page_number += 1
                 texts = text_splitter.split_text(raw_text)
-                text_splits.extend(texts)  # Assuming embed_texts method exists
+                text_splits.extend(texts)
 
 
             bot_profile = request.files.get("bot_profile")

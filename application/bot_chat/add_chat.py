@@ -70,8 +70,7 @@ class AddChat(Resource):
             text = bot.get("text_splits", "")
             astra_vector_store.add_texts(text)
             print(f"Inserted {len(text)} headlines. ")
-            # role_playing = decrypt_aes(bot["encrypted_bot_prompt"], bot["iv"], aes_key)  # Decrypt prompt
-            role_playing = "Answer should be short and to the point"  # Decrypt prompt
+            role_playing = decrypt_aes(bot["encrypted_bot_prompt"], bot["iv"], aes_key)  # Decrypt prompt
 
 
             astra_vector_index = VectorStoreIndexWrapper(vectorstore=astra_vector_store)
